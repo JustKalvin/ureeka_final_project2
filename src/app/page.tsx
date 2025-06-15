@@ -1,11 +1,12 @@
 'use client'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import Link from 'next/link'
-
+import Button from "./components/button"
 
 const Page = () => {
   return (
     <div className="min-h-screen w-full bg-yellow-50 flex flex-col items-center justify-center px-6 text-center">
+      < Button />
       <DotLottieReact
         src="/animations/laugh.lottie"
         loop

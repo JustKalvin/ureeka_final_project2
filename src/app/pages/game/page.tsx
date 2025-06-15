@@ -2,6 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import axios from "axios";
+import Link from "next/link";
+import Button from "../../components/button"
 
 const Page = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -190,7 +192,8 @@ const Page = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 py-6 bg-gray-100">
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">{status}</h2>
+      <Button />
+      <h2 className="text-2xl font-bold text-center text-gray-800 mb-4 pt-20">{status}</h2>
 
       {retryButton && (
         <div className="text-center mb-4">
