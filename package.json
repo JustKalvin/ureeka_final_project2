@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@lottiefiles/dotlottie-react": "^0.14.1",
+    "@react-three/drei": "^10.2.0",
+    "@react-three/fiber": "^9.1.2",
     "axios": "^1.10.0",
     "face-api.js": "^0.22.2",
     "next": "15.3.3",

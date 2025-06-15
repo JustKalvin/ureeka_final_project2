@@ -12,6 +12,24 @@ const Page = () => {
   const [faceStatus, setFaceStatus] = useState<string | null>("Neutral")
   const [randomIdx, setRandomIdx] = useState<number>(-1);
   const [videoToShow, setVideoToShow] = useState<any | null>({})
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+
+  useEffect(() => {
+    const start = Date.now();
+    setStartTime(start);
+
+    timerRef.current = setInterval(() => {
+      setElapsedTime(Math.floor((Date.now() - start) / 1000)); // dalam detik
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
 
   useEffect(() => {
     startVideo();
@@ -33,17 +51,6 @@ const Page = () => {
     setMemeVideo(vid);
     console.log("Video yang dipilih:", vid);
     setRandomIdx(Math.floor(Math.random() * 9))
-    // Cek apakah array tidak kosong
-    //   if (response.data && Array.isArray(response.data) && response.data.length > 0) {
-    //     const vid = response.data; // Ambil satu video, misalnya yang pertama
-    //     setMemeVideo(vid);
-    //     console.log("Video yang dipilih:", vid);
-    //   } else {
-    //     console.error("Data video kosong atau tidak valid:", response.data);
-    //   }
-    // } catch (error) {
-    //   console.error("Gagal fetch video:", error);
-    // }
   }
 
 
@@ -118,7 +125,11 @@ const Page = () => {
           if (maxExp[0] === "happy" && maxExp[1] > 0.8) {
             setStatus("You laughed! You lost 😆.");
             setRetryButton(true);
-            setFaceStatus("Happy")
+            setFaceStatus("Happy");
+
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+            }
           }
         }
       }
@@ -128,15 +139,26 @@ const Page = () => {
   const handleRetryButton = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setStatus("Game Started... Don't Laugh!");
     setRetryButton(false);
-    setFaceStatus("Neutral")
+    setFaceStatus("Neutral");
+    setElapsedTime(0);
+
+    const newStart = Date.now();
+    setStartTime(newStart);
+    if (timerRef.current) clearInterval(timerRef.current);
+
+    timerRef.current = setInterval(() => {
+      setElapsedTime(Math.floor((Date.now() - newStart) / 1000));
+    }, 1000);
+
     while (true) {
-      let rdm = Math.floor(Math.random() * 9)
+      let rdm = Math.floor(Math.random() * 9);
       if (randomIdx !== rdm) {
-        setRandomIdx(rdm)
-        break
+        setRandomIdx(rdm);
+        break;
       }
     }
   };
+
 
   const convertToEmbedURL = (url: string | undefined) => {
     if (!url || !url.startsWith("http")) return ""; // fallback kalau URL tidak valid
@@ -155,6 +177,13 @@ const Page = () => {
       return "";
     }
   };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const secs = (seconds % 60).toString().padStart(2, '0');
+    return `${mins}:${secs}`;
+  };
+
 
 
 
@@ -181,6 +210,9 @@ const Page = () => {
           faceStatus === "Neutral" ? (
             <div className="w-full md:w-[400px]">
               <div className="w-full md:w-[400px]">
+                <h1 className={`text-3xl font-bold text-gray-800 opacity-10`}>
+                  Time: {formatTime(elapsedTime)}
+                </h1>
                 <h3 className="text-xl font-semibold mb-2 text-gray-800">Watch Meme Video 👇</h3>
                 <p>Idx : {randomIdx}</p>
                 <div className="bg-white rounded-lg shadow-md p-4">
@@ -198,7 +230,8 @@ const Page = () => {
                 </div>
               </div>
             </div>
-          ) : (<p>YOU LAUGH, BRO!</p>)
+          ) : (<p className="text-xl text-red-600 font-bold mt-2">Your score: {elapsedTime}</p>
+          )
         )}
 
         {/* Webcam & Canvas */}
