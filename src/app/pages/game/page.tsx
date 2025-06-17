@@ -4,6 +4,7 @@ import * as faceapi from "face-api.js";
 import axios from "axios";
 import Link from "next/link";
 import Button from "../../components/button"
+import { isReadable } from "stream";
 
 const Page = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -17,20 +18,23 @@ const Page = () => {
   const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const isReadyRef = useRef<boolean>(false);
+  const [beforeExp, setBeforeExp] = useState<any | null>(null);
+  const [afterExp, setAfterExp] = useState<any | null>(null);
+  const haseCaptureAfterExp = useRef<any | null>(null);
 
+  // useEffect(() => {
+  //   const start = Date.now();
+  //   setStartTime(start);
 
-  useEffect(() => {
-    const start = Date.now();
-    setStartTime(start);
+  //   timerRef.current = setInterval(() => {
+  //     setElapsedTime(Math.floor((Date.now() - start) / 1000)); // dalam detik
+  //   }, 1000);
 
-    timerRef.current = setInterval(() => {
-      setElapsedTime(Math.floor((Date.now() - start) / 1000)); // dalam detik
-    }, 1000);
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, []);
+  //   return () => {
+  //     if (timerRef.current) clearInterval(timerRef.current);
+  //   };
+  // }, []);
 
 
   useEffect(() => {
@@ -124,21 +128,26 @@ const Page = () => {
             a[1] > b[1] ? a : b
           );
 
-          if (maxExp[0] === "happy" && maxExp[1] > 0.8) {
+          if (maxExp[0] === "happy" && maxExp[1] > 0.8 && isReadyRef.current === true && haseCaptureAfterExp.current === false) {
             setStatus("You laughed! You lost 😆.");
             setRetryButton(true);
             setFaceStatus("Happy");
 
-            if (timerRef.current) {
-              clearInterval(timerRef.current);
+            if (timerRef.current) clearInterval(timerRef.current);
+
+            const after = await captureExpression();
+            if (after) {
+              setAfterExp(after);
+              haseCaptureAfterExp.current = true;
             }
           }
+
         }
       }
     }, 300);
   };
 
-  const handleRetryButton = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleRetryButton = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setStatus("Game Started... Don't Laugh!");
     setRetryButton(false);
     setFaceStatus("Neutral");
@@ -158,6 +167,12 @@ const Page = () => {
         setRandomIdx(rdm);
         break;
       }
+    }
+    const expressions = await captureExpression();
+    if (expressions) {
+      setBeforeExp(expressions);
+      setAfterExp(null);
+      haseCaptureAfterExp.current = false;
     }
   };
 
@@ -186,7 +201,40 @@ const Page = () => {
     return `${mins}:${secs}`;
   };
 
+  // Fungsi ambil ekspresi dari screenshot
+  const captureExpression = async (): Promise<any> => {
+    if (!videoRef.current) return null;
 
+    const detections = await faceapi
+      .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
+      .withFaceExpressions();
+
+    if (!detections) return null;
+
+    const expressions = detections.expressions;
+    return expressions;
+  };
+
+
+  const handleClickToStart = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    isReadyRef.current = true;
+    const start = Date.now();
+    setStartTime(start);
+    setElapsedTime(0);
+
+    if (timerRef.current) clearInterval(timerRef.current);
+
+    timerRef.current = setInterval(() => {
+      setElapsedTime(Math.floor((Date.now() - start) / 1000));
+    }, 1000);
+
+    const expressions = await captureExpression();
+    if (expressions) {
+      setBeforeExp(expressions);
+      setAfterExp(null);
+      haseCaptureAfterExp.current = false;
+    }
+  };
 
 
 
@@ -207,34 +255,65 @@ const Page = () => {
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row gap-8 items-start mt-6">
+      <div className="flex flex-col md:flex-row gap-8 items-center justify-center mt-6">
+
         {/* Meme Video */}
-        {memeVideo && (
-          faceStatus === "Neutral" ? (
-            <div className="w-full md:w-[400px]">
-              <div className="w-full md:w-[400px]">
-                <h1 className={`text-3xl font-bold text-gray-800 opacity-10`}>
-                  Time: {formatTime(elapsedTime)}
-                </h1>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Watch Meme Video 👇</h3>
-                <p>Idx : {randomIdx}</p>
-                <div className="bg-white rounded-lg shadow-md p-4">
-                  <p className="text-gray-700 font-medium mb-2">{videoToShow?.title}</p>
-                  <iframe
-                    width="100%"
-                    height="215"
-                    src={convertToEmbedURL(videoToShow?.url)}
-                    title={videoToShow?.title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="rounded-md"
-                  />
+        {memeVideo && memeVideo.length > 0 ? (
+          <div className="flex flex-col items-center justify-center">
+            {!isReadyRef.current ? (
+              <button
+                onClick={(e) => handleClickToStart(e)}
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-200"
+              >
+                Click To Start
+              </button>
+            ) : (
+              faceStatus === "Neutral" ? (
+                <div className="w-full md:w-[720px]">
+                  <h1 className={`text-3xl font-bold text-gray-800 opacity-10`}>
+                    Time: {formatTime(elapsedTime)}
+                  </h1>
+                  <h3 className="text-xl font-semibold mb-2 text-gray-800">Watch Meme Video 👇</h3>
+                  <p>Idx : {randomIdx}</p>
+                  <div className="bg-white rounded-lg shadow-md p-4">
+                    <p className="text-gray-700 font-medium mb-2">{videoToShow?.title}</p>
+                    <iframe
+                      width="100%"
+                      height="400"
+                      src={convertToEmbedURL(videoToShow?.url)}
+                      title={videoToShow?.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="rounded-md"
+                    />
+                  </div>
                 </div>
-              </div>
-            </div>
-          ) : (<p className="text-xl text-red-600 font-bold mt-2">Your score: {elapsedTime}</p>
-          )
+              ) : (
+                <div>
+                  <p className="text-xl text-red-600 font-bold mt-2">Your score: {elapsedTime}</p>
+                  {afterExp && beforeExp && (
+                    <div className="bg-white p-4 rounded-md mt-4 shadow-md">
+                      <h4 className="text-gray-700 font-semibold mb-2">Mood Analysis 🧠</h4>
+                      <p className="text-gray-800">
+                        Ekspresi bahagia kamu meningkat dari{" "}
+                        <strong>{(beforeExp.happy * 100).toFixed(1)}%</strong> ke{" "}
+                        <strong>{(afterExp.happy * 100).toFixed(1)}%</strong>.{" "}
+                        {afterExp.happy > beforeExp.happy ? "😊 Great job!" : "😐 Tetap semangat!"}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-gray-600 text-lg font-semibold animate-pulse mt-10">
+              Fetching Meme Videos...
+            </p>
+            <div className="w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mt-4"></div>
+          </div>
         )}
 
         {/* Webcam & Canvas */}
@@ -255,8 +334,9 @@ const Page = () => {
           />
         </div>
       </div>
+
+
     </div>
   );
-};
-
+}
 export default Page;
