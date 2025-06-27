@@ -7,6 +7,7 @@ import Button from "../../components/button"
 import { isReadable } from "stream";
 import { useSession } from "next-auth/react"
 import { updatePoint } from "../../query"
+import ReactPlayer from 'react-player/youtube'
 
 const Page = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -47,7 +48,7 @@ const Page = () => {
     if (session?.user?.email && session?.user?.name) {
       console.log(session.user.email, " and ", session.user.name)
     }
-  }, [session]);
+  }, []);
 
   useEffect(() => {
     if (randomIdx !== -1 && memeVideo && memeVideo.length > randomIdx) {
@@ -304,7 +305,11 @@ const Page = () => {
                   <p>Idx : {randomIdx}</p>
                   <div className="bg-white rounded-lg shadow-md p-4">
                     <p className="text-gray-700 font-medium mb-2">{videoToShow?.title}</p>
-                    <iframe
+                    <ReactPlayer
+                      url={convertToEmbedURL(videoToShow?.url)}
+                      playing={true} // Ini yang mengaktifkan autoplay
+                    />
+                    {/* <iframe
                       width="100%"
                       height="400"
                       src={convertToEmbedURL(videoToShow?.url)}
@@ -314,7 +319,7 @@ const Page = () => {
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; autoplay"
                       allowFullScreen
                       className="rounded-md"
-                    />
+                    /> */}
                   </div>
                 </div>
               ) : (
