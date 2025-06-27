@@ -2,8 +2,14 @@
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import Link from 'next/link'
 import Button from "./components/button"
+import { useSession } from 'next-auth/react'
 
 const Page = () => {
+  const { data: session } = useSession()
+  if (session?.user?.email && session?.user?.name) {
+    console.log(session.user.email, " and ", session.user.name)
+  }
+
   return (
     <div className="min-h-screen w-full bg-yellow-50 flex flex-col items-center justify-center px-6 text-center">
       < Button />

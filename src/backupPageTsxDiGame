@@ -7,8 +7,6 @@ import Button from "../../components/button"
 import { isReadable } from "stream";
 import { useSession } from "next-auth/react"
 import { updatePoint } from "../../query"
-import YouTube from 'react-youtube';
-
 
 const Page = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -200,18 +198,6 @@ const Page = () => {
     }
   };
 
-  const extractYouTubeVideoId = (url: string | undefined) => {
-    if (!url || !url.startsWith("http")) return "";
-
-    try {
-      const urlObj = new URL(url);
-      const videoId = urlObj.searchParams.get("v");
-      return videoId || "";
-    } catch (e) {
-      console.error("Invalid video URL:", url, e);
-      return "";
-    }
-  };
 
 
   const convertToEmbedURL = (url: string | undefined) => {
@@ -318,25 +304,17 @@ const Page = () => {
                   <p>Idx : {randomIdx}</p>
                   <div className="bg-white rounded-lg shadow-md p-4">
                     <p className="text-gray-700 font-medium mb-2">{videoToShow?.title}</p>
-                    <YouTube
-                      videoId={extractYouTubeVideoId(videoToShow?.url)}
-                      opts={{
-                        width: '100%',
-                        height: '400',
-                        playerVars: {
-                          autoplay: 1,
-                          mute: 1,
-                        },
-                      }}
-                      onReady={(event) => event.target.playVideo()}
-                      onError={(e) => {
-                        console.error("YouTube error:", e.data);
-                        setStatus("❌ Video gagal dimuat. Coba lagi dengan video lain.");
-                        setRetryButton(true);
-                      }}
+                    <iframe
+                      width="100%"
+                      height="400"
+                      src={convertToEmbedURL(videoToShow?.url)}
+                      title={videoToShow?.title}
+                      frameBorder="0"
+                      // Tambahkan allow="autoplay" di sini
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; autoplay"
+                      allowFullScreen
+                      className="rounded-md"
                     />
-
-
                   </div>
                 </div>
               ) : (
