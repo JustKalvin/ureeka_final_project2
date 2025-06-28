@@ -31,9 +31,9 @@ export default function AuthStatus() {
   }
 
   return (
-    <>
+    <div className="">
       <p>You are not signed in</p>
       <button onClick={() => signIn("google")}>Sign in with Google</button>
-    </>
+    </div>
   );
 }
