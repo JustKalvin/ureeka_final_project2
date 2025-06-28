@@ -12,6 +12,20 @@ export type users = {
 type Result<T> = { success: boolean; data?: T; message?: string };
 
 // Fungsi tambah user ke Supabase
+
+export const getUsersByEmail = async (email: string): Promise<Result<users>> => {
+  const { data, error } = await supabase.from("users").select("*").eq("email", email).limit(1)
+  if (error) return { success: false, message: error.message }
+  if (!data || data.length === 0) return { success: false, message: "data not found!" }
+  return { success: true, data: data[0] }
+}
+
+export const getUsers = async (): Promise<Result<users[]>> => {
+  const { data, error } = await supabase.from("users").select("*")
+  if (error) return { success: false, message: error.message }
+  return { success: true, data: data }
+}
+
 export const addUser = async (name: string, email: string): Promise<Result<users>> => {
   const { data, error } = await supabase.from("users").select("*").eq("email", email).limit(1);
   if (error) return { success: false, message: error.message };
