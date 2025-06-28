@@ -267,7 +267,7 @@ const Page = () => {
 
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 py-6 bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-300 to-white p-6 relative flex flex-col items-center">
       <Button />
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-4 pt-20">{status}</h2>
 

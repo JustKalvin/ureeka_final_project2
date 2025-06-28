@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { users, getUsers, getUsersByEmail } from "../../query";
 import { useSession } from "next-auth/react";
 import Button from "../../components/button"
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const Leaderboard = () => {
   const [topUsers, setTopUsers] = useState<users[]>([]);
@@ -48,24 +49,33 @@ const Leaderboard = () => {
 
 
       <h1 className="text-4xl font-bold mb-8 text-gray-800 animate-pulse mt-8">🏆 Top Users</h1>
-      <div className="w-full max-w-md space-y-4">
-        {topUsers.map((item, index) => (
-          <div
-            key={index}
-            className={`p-4 rounded-xl shadow-md transform transition-all duration-300 hover:scale-105 ${index === 0
-              ? "bg-red-100 text-red-700 font-bold"
-              : index === 1
-                ? "bg-yellow-100 text-yellow-700 font-semibold"
-                : index === 2
-                  ? "bg-blue-100 text-blue-700 font-medium"
-                  : "bg-white text-gray-800"
-              }`}
-          >
-            <p className="text-lg">
-              {index + 1}. {item.name} - {item.point}
-            </p>
-          </div>
-        ))}
+      <div className="flex flex-row justify-center items-center">
+        <div className="w-full max-w-md space-y-4">
+          {topUsers.map((item, index) => (
+            <div
+              key={index}
+              className={`p-4 rounded-xl shadow-md transform transition-all duration-300 hover:scale-105 ${index === 0
+                ? "bg-red-100 text-red-700 font-bold"
+                : index === 1
+                  ? "bg-yellow-100 text-yellow-700 font-semibold"
+                  : index === 2
+                    ? "bg-blue-100 text-blue-700 font-medium"
+                    : "bg-white text-gray-800"
+                }`}
+            >
+              <p className="text-lg">
+                {index + 1}. {item.name} - {item.point}
+              </p>
+            </div>
+          ))}
+        </div>
+        <DotLottieReact
+          src="https://lottie.host/c7cec9c8-8dce-4a34-8c2a-5c4ae92bdefe/n88JXP81v4.lottie"
+          loop
+          autoplay
+          style={{ scale: "1.5" }}
+        />
+
       </div>
     </div>
   );

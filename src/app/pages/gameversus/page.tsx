@@ -327,7 +327,7 @@ const gameversus = () => {
 
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 py-6 bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-300 to-white p-6 relative flex flex-col items-center">
       <Button />
       <h2 className="text-3xl font-extrabold text-center text-blue-800 mb-6 pt-16">{status}</h2>
       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center text-center mb-8">

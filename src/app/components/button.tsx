@@ -44,7 +44,7 @@ const Button: React.FC = () => {
           </button>
         </Link>
 
-        <Link href="/pages/login2">
+        <Link href="/pages/login">
           <button className="button">
             <svg
               className="icon"

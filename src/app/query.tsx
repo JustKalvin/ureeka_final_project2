@@ -21,7 +21,7 @@ export const getUsersByEmail = async (email: string): Promise<Result<users>> => 
 }
 
 export const getUsers = async (): Promise<Result<users[]>> => {
-  const { data, error } = await supabase.from("users").select("*")
+  const { data, error } = await supabase.from("users").select("*").limit(10)
   if (error) return { success: false, message: error.message }
   return { success: true, data: data }
 }
