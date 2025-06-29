@@ -2,8 +2,11 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as faceapi from "face-api.js";
 import Button from "../../components/button"
+import { updatePoint } from "../../query"
+import { useSession } from "next-auth/react";
 
 const smilesimulation = () => {
+  const { data: session, status } = useSession();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [smileProgress, setSmileProgress] = useState(0);
@@ -11,6 +14,7 @@ const smilesimulation = () => {
   const intervalTime = 100; // ms
   const intervalRef = useRef<NodeJS.Timeout | null>(null); // untuk membersihkan interval nanti
   const [finalText, setFinalText] = useState<string>("")
+  const [hasShown, setHasShown] = useState<boolean>(false)
   const motivations = [
     "Smile can boost your mood and reduce stress 😊",
     "Smile can light up someone's day ✨",
@@ -103,17 +107,49 @@ const smilesimulation = () => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   if (hasShown === true) {
+  //     if (session?.user?.email) {
+  //       updatePoint(session.user.email, 60)
+  //     }
+  //   }
+  // }, [hasShown, session])
+
   useEffect(() => {
-    if (smileProgress >= 100) {
-      let randomIdx = Math.floor(Math.random() * motivations.length)
-      setFinalText(finalText => (motivations[randomIdx]))
-      // if (intervalRef.current) clearInterval(intervalRef.current)
+    if (smileProgress >= 100 && !hasShown) {
+      const randomIdx = Math.floor(Math.random() * motivations.length);
+      setFinalText(motivations[randomIdx]);
+
+      if (session?.user?.email) {
+        updatePoint(session.user.email, 5);
+      }
+
+      setHasShown(true); // agar tidak dipanggil ulang
     }
-  }, [smileProgress])
+  }, [smileProgress, hasShown, motivations, session]);
+
+  useEffect(() => {
+    if (hasShown) {
+      const timer = setTimeout(() => {
+        setHasShown(false);     // sembunyikan tulisan
+        setSmileProgress(0);    // reset progress bar ke 0
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [hasShown]);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-300 to-white p-6 relative flex flex-col items-center">
       <Button />
+      {hasShown && (
+        <div className="text-green-600 font-bold text-2xl mt-4 animate-bounce z-50">
+          +5 Points 🎉
+        </div>
+      )}
+
+
       {finalText && (
         <p className="text-xl md:text-2xl text-yellow-700 font-bold text-center mt-6 animate-pulse">{finalText}</p>
       )}

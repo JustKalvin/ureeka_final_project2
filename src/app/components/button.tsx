@@ -34,6 +34,16 @@ const Button: React.FC = () => {
           </button>
         </Link>
 
+        <Link href="/pages/journal">
+          <button className="button">
+            <img
+              src="/assets/Journal.png" // Ganti path sesuai lokasi gambar kamu
+              alt="Search Icon"
+              className="icon"
+            />
+          </button>
+        </Link>
+
         <Link href="/pages/leaderboard">
           <button className="button">
             <img
@@ -60,6 +70,7 @@ const Button: React.FC = () => {
             </svg>
           </button>
         </Link>
+
 
       </div>
     </StyledWrapper>

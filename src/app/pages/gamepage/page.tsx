@@ -37,14 +37,14 @@ const gamepage = () => {
           <Link href="/pages/game">
             <button className="flex items-center gap-2 px-10 py-4 bg-yellow-400 text-yellow-900 text-lg font-semibold rounded-xl shadow-lg hover:bg-yellow-500 transition duration-200 transform hover:scale-105">
               <img src="/assets/SinglePlayer.png" alt="Single Icon" className="w-12 h-12 animate-bounce" />
-              SINGLE
+              TRY NO TO LAUGH SINGLE
             </button>
           </Link>
 
           <Link href="/pages/gameversus">
             <button className="flex items-center gap-2 px-10 py-4 bg-yellow-400 text-yellow-900 text-lg font-semibold rounded-xl shadow-lg hover:bg-yellow-500 transition duration-200 transform hover:scale-105">
               <img src="/assets/DualPlayer.png" alt="Single Icon" className="w-12 h-12 animate-bounce" />
-              VERSUS
+              TRY NO TO LAUGH VERSUS
             </button>
           </Link>
 
