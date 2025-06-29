@@ -18,6 +18,12 @@ export type journal = {
   bot_response: string;
 }
 
+export type jokes = {
+  id: number;
+  theJoke: string;
+  counter: number;
+}
+
 type Result<T> = { success: boolean; data?: T; message?: string };
 
 // Fungsi tambah user ke Supabase
@@ -145,3 +151,20 @@ export const getAllJournal = async (user_id: number): Promise<Result<journal[]>>
   if (error) return { success: false, message: error.message };
   return { success: true, data };
 };
+
+
+export const getJokes = async (): Promise<Result<jokes[]>> => {
+  const { data, error } = await supabase.from("jokes").select("*")
+  if (error) return { success: false, message: error.message }
+  return { success: true, data: data }
+}
+
+export const updateJokesCounter = async (id: number): Promise<Result<jokes>> => {
+  const { data, error } = await supabase.from("jokes").select("*").eq("id", id).limit(1)
+  if (error) return { success: false, message: error.message }
+  if (!data || data.length <= 0) return { success: false, message: "data not found" }
+  const theCounter = data[0].counter + 1
+  const { data: updateData, error: updateError } = await supabase.from("jokes").update({ counter: theCounter }).eq("id", id).select()
+  if (updateError) return { success: false, message: updateError.message }
+  return { success: true, data: updateData[0] }
+}
