@@ -6,7 +6,7 @@ import Link from "next/link";
 import Button from "../../components/button"
 import { isReadable } from "stream";
 import { useSession } from "next-auth/react"
-import { updatePoint } from "../../query"
+import { updatePoint, getPunishment } from "../../query"
 import ReactPlayer from 'react-player/youtube'
 
 const gameversus = () => {
@@ -33,18 +33,11 @@ const gameversus = () => {
   const [player2Score, setPlayer2Score] = useState<number>(0);
   const [end, setEnd] = useState<boolean>(false);
   const [loser, setLoser] = useState<"Player 1" | "Player 2" | null>(null);
-  const punishments = [
-    "Do 10 push-ups!",
-    "Sing a song 🎤",
-    "Dance for 15 seconds 💃",
-    "Tell a joke 🤡",
-    "Speak in an accent for 1 minute",
-    "Post a silly photo 📸",
-  ];
+  // let punishments = [""];
+  const punishments = useRef<any>([])
 
   const [selectedPunishment, setSelectedPunishment] = useState<string | null>(null);
   const [rollingPunishment, setRollingPunishment] = useState<string | null>(null);
-
 
   useEffect(() => {
     if (end && loser) {
@@ -53,12 +46,12 @@ const gameversus = () => {
       const intervalTime = 100;
       const totalTicks = duration / intervalTime;
 
-      const finalIndex = Math.floor(Math.random() * punishments.length);
-      const finalPunishment = punishments[finalIndex];
+      const finalIndex = Math.floor(Math.random() * punishments.current.length);
+      const finalPunishment = punishments.current[finalIndex].punishment;
 
       const interval = setInterval(() => {
-        const randomIdx = Math.floor(Math.random() * punishments.length);
-        setRollingPunishment(punishments[randomIdx]);
+        const randomIdx = Math.floor(Math.random() * punishments.current.length);
+        setRollingPunishment(punishments.current[randomIdx].punishment);
         counter++;
         if (counter >= totalTicks) {
           clearInterval(interval);
@@ -85,6 +78,7 @@ const gameversus = () => {
 
 
   useEffect(() => {
+    fetchPunishment();
     startVideo();
     loadModels();
     fetchMemeVideos();
@@ -99,6 +93,11 @@ const gameversus = () => {
     }
   }, [randomIdx, memeVideo]);
 
+  const fetchPunishment = async () => {
+    const tempPunishments = await getPunishment()
+    console.log("Nih, punishments : ", tempPunishments.data)
+    punishments.current = tempPunishments.data
+  }
 
   const fetchMemeVideos = async () => {
     const response = await axios.post("https://nominally-picked-grubworm.ngrok-free.app/webhook/scraping-meme-videos");
