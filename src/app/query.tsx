@@ -29,6 +29,11 @@ export type punishments = {
   punishment: string;
 }
 
+export type memes = {
+  id: number;
+  meme: string;
+}
+
 type Result<T> = { success: boolean; data?: T; message?: string };
 
 // Fungsi tambah user ke Supabase
@@ -42,6 +47,12 @@ export const getUsersByEmail = async (email: string): Promise<Result<users>> => 
 
 export const getPunishment = async (): Promise<Result<punishments[]>> => {
   const { data, error } = await supabase.from("punishments").select("*")
+  if (error) return { success: false, message: error.message }
+  return { success: true, data: data }
+}
+
+export const getMemes = async (): Promise<Result<memes[]>> => {
+  const { data, error } = await supabase.from("memes").select("*")
   if (error) return { success: false, message: error.message }
   return { success: true, data: data }
 }

@@ -6,7 +6,7 @@ import Link from "next/link";
 import Button from "../../components/button"
 import { isReadable } from "stream";
 import { useSession } from "next-auth/react"
-import { updatePoint, getPunishment } from "../../query"
+import { updatePoint, getPunishment, getMemes } from "../../query"
 import ReactPlayer from 'react-player/youtube'
 
 const gameversus = () => {
@@ -89,7 +89,7 @@ const gameversus = () => {
 
   useEffect(() => {
     if (randomIdx !== -1 && memeVideo && memeVideo.length > randomIdx) {
-      setVideoToShow(memeVideo[randomIdx]);
+      setVideoToShow(memeVideo[randomIdx].meme);
     }
   }, [randomIdx, memeVideo]);
 
@@ -100,12 +100,15 @@ const gameversus = () => {
   }
 
   const fetchMemeVideos = async () => {
-    const response = await axios.post("https://nominally-picked-grubworm.ngrok-free.app/webhook/scraping-meme-videos");
-    console.log("hasil fetch : ", response.data)
-    const vid = response.data; // Ambil satu video, misalnya yang pertama
-    setMemeVideo(vid);
-    console.log("Video yang dipilih:", vid);
-    setRandomIdx(Math.floor(Math.random() * 9))
+    // const response = await axios.post("https://nominally-picked-grubworm.ngrok-free.app/webhook/scraping-meme-videos");
+    const response = await getMemes()
+    if (response.success && response.data) {
+      console.log("hasil fetch : ", response.data)
+      const vid = response.data; // Ambil satu video, misalnya yang pertama
+      setMemeVideo(vid);
+      console.log("Video yang dipilih:", vid);
+      setRandomIdx(Math.floor(Math.random() * 9))
+    }
   }
 
 
@@ -398,11 +401,11 @@ const gameversus = () => {
                         ⏱️ Time Elapsed: <span className="font-bold">{formatTime(elapsedTime)}</span>
                       </h1>
                       <h3 className="text-xl font-semibold mb-2 text-gray-800">Watch Meme Video 👇</h3>
-                      <p>Idx : {randomIdx}</p>
+                      {/* <p>Idx : {randomIdx}</p> */}
                       <div className="bg-white rounded-lg shadow-md p-4">
                         <p className="text-gray-700 font-medium mb-2">{videoToShow?.title}</p>
                         <ReactPlayer
-                          url={convertToEmbedURL(videoToShow?.url)}
+                          url={convertToEmbedURL(videoToShow)}
                           // url="https://www.youtube.com/embed/DplROgfUZ7U"
                           playing={true} // Ini yang mengaktifkan autoplay
                         />

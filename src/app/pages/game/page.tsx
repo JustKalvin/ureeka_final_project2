@@ -6,7 +6,7 @@ import Link from "next/link";
 import Button from "../../components/button"
 import { isReadable } from "stream";
 import { useSession } from "next-auth/react"
-import { updatePoint } from "../../query"
+import { updatePoint, getMemes } from "../../query"
 import ReactPlayer from 'react-player/youtube'
 
 const Page = () => {
@@ -52,18 +52,23 @@ const Page = () => {
 
   useEffect(() => {
     if (randomIdx !== -1 && memeVideo && memeVideo.length > randomIdx) {
-      setVideoToShow(memeVideo[randomIdx]);
+      console.log("memeVideo : ", memeVideo[randomIdx].meme)
+      setVideoToShow(memeVideo[randomIdx].meme);
     }
   }, [randomIdx, memeVideo]);
 
 
   const fetchMemeVideos = async () => {
-    const response = await axios.post("https://nominally-picked-grubworm.ngrok-free.app/webhook/scraping-meme-videos");
-    console.log("hasil fetch : ", response.data)
-    const vid = response.data; // Ambil satu video, misalnya yang pertama
-    setMemeVideo(vid);
-    console.log("Video yang dipilih:", vid);
-    setRandomIdx(Math.floor(Math.random() * 9))
+    const response = await getMemes()
+
+    // const response = await axios.post("https://nominally-picked-grubworm.ngrok-free.app/webhook/scraping-meme-videos");
+    if (response.success && response.data) {
+      console.log("hasil fetch : ", response.data)
+      const vid = response.data; // Ambil satu video, misalnya yang pertama
+      setMemeVideo(vid);
+      console.log("Video yang dipilih:", vid);
+      setRandomIdx(Math.floor(Math.random() * 9))
+    }
   }
 
 
@@ -302,11 +307,11 @@ const Page = () => {
                     Time: {formatTime(elapsedTime)}
                   </h1>
                   <h3 className="text-xl font-semibold mb-2 text-gray-800">Watch Meme Video 👇</h3>
-                  <p>Idx : {randomIdx}</p>
+                  {/* <p>Idx : {randomIdx}</p> */}
                   <div className="bg-white rounded-lg shadow-md p-4">
                     <p className="text-gray-700 font-medium mb-2">{videoToShow?.title}</p>
                     <ReactPlayer
-                      url={convertToEmbedURL(videoToShow?.url)}
+                      url={convertToEmbedURL(videoToShow)}
                       playing={true} // Ini yang mengaktifkan autoplay
                     />
                     {/* <iframe
