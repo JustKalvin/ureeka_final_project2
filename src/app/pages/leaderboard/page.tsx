@@ -4,6 +4,7 @@ import { users, getUsers, getUsersByEmail } from "../../query";
 import { useSession } from "next-auth/react";
 import Button from "../../components/button"
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import Footer from "../../components/Footer"
 
 const Leaderboard = () => {
   const [topUsers, setTopUsers] = useState<users[]>([]);
@@ -77,6 +78,7 @@ const Leaderboard = () => {
         />
 
       </div>
+      <Footer />
     </div>
   );
 };

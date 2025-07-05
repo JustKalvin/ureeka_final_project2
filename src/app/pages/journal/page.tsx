@@ -7,6 +7,8 @@ import { useSession } from "next-auth/react";
 import { PlusCircle } from "lucide-react";
 import Button from "../../components/button"
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, XAxis, YAxis, Bar } from "recharts";
+import Footer from "../../components/Footer"
+
 
 
 type sentiments = {
@@ -235,10 +237,7 @@ const Journal = () => {
           </div>
         </div>
       )}
-
-
-
-
+      <Footer />
     </div>
   );
 };

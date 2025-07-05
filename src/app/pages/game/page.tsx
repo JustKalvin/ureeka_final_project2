@@ -8,6 +8,7 @@ import { isReadable } from "stream";
 import { useSession } from "next-auth/react"
 import { updatePoint, getMemes } from "../../query"
 import ReactPlayer from 'react-player/youtube'
+import Footer from "../../components/Footer"
 
 const Page = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -373,7 +374,7 @@ const Page = () => {
         </div>
       </div>
 
-
+      <Footer />
     </div>
   );
 }

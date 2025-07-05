@@ -8,6 +8,8 @@ import { isReadable } from "stream";
 import { useSession } from "next-auth/react"
 import { updatePoint, getPunishment, getMemes } from "../../query"
 import ReactPlayer from 'react-player/youtube'
+import Footer from "../../components/Footer"
+
 
 const gameversus = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -470,7 +472,7 @@ const gameversus = () => {
         )}
 
       </div>
-
+      <Footer />
     </div>
   );
 }

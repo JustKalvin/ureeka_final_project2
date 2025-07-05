@@ -4,6 +4,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect } from "react";
 import { addUser } from "../../query"; // Ensure this path is correct
 import Button from "../../components/button"
+import Footer from "../../components/Footer"
 
 export default function AuthStatus() {
   const { data: session, status } = useSession();
@@ -32,7 +33,7 @@ export default function AuthStatus() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-300 to-white p-6 relative flex flex-col items-center">
+    <div className="min-h-screen flex flex-col justify-between items-center bg-gradient-to-br from-yellow-300 to-white p-6">
       <div>
         <Button />
       </div>
@@ -57,7 +58,7 @@ export default function AuthStatus() {
           </>
         )}
       </div>
-
+      <Footer />
       {/* Styled JSX for component-specific styles */}
       <style jsx>{`
         .auth-container {

@@ -4,6 +4,7 @@ import * as faceapi from "face-api.js";
 import Button from "../../components/button"
 import { updatePoint } from "../../query"
 import { useSession } from "next-auth/react";
+import Footer from "../../components/Footer"
 
 const smilesimulation = () => {
   const { data: session, status } = useSession();
@@ -141,7 +142,7 @@ const smilesimulation = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-300 to-white p-6 relative flex flex-col items-center">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-300 to-white p-6 relative flex flex-col items-center h-250">
       <Button />
       {hasShown && (
         <div className="text-green-600 font-bold text-2xl mt-4 animate-bounce z-50">
@@ -204,6 +205,7 @@ const smilesimulation = () => {
         ></div>
       </div>
       <p className="mt-2 text-lg font-semibold z-100 text-yellow-700">{Math.round(smileProgress)}%</p>
+      <Footer />
     </div>
   );
 };

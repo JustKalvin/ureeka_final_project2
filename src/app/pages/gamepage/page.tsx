@@ -2,10 +2,11 @@
 import Link from "next/link";
 import Button from "../../components/button";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import Footer from "../../components/Footer"
 
 const gamepage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-300 to-white" style={{ height: "1000px" }}>
+    <div className="min-h-screen bg-gradient-to-br from-yellow-300 to-white" style={{ height: "1100px" }}>
       {/* Bagian atas (Button) */}
       <div className="pt-10 flex justify-center">
         <Button />
@@ -63,6 +64,7 @@ const gamepage = () => {
           </Link>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

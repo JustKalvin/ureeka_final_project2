@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getJokes, updateJokesCounter, updatePoint } from "../../query";
 import Button from "../../components/button"
 import { useSession } from "next-auth/react";
+import Footer from "../../components/Footer"
 
 type Joke = {
   id: number;
@@ -132,6 +133,7 @@ const JokesPage = () => {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

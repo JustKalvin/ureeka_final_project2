@@ -1,6 +1,7 @@
 // app/video-drive/page.tsx
 "use client";
 import React from "react";
+import Footer from "../../components/Footer"
 
 const GoogleDriveVideo = () => {
   return (
@@ -11,10 +12,11 @@ const GoogleDriveVideo = () => {
         height="315"
         src="https://www.youtube.com/embed/dQw4w9WgXcQ"
         title="Rickroll 🙂"
-        frameborder="0"
+        frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
+        allowFullScreen
       ></iframe>
+      <Footer />
     </div>
   );
 };
