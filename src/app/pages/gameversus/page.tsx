@@ -427,8 +427,9 @@ const gameversus = () => {
                   ) : (
                     player1Laughed.current ? (
                       <div>
-                        <p>{`Player1 Laughed, Player2 WIN!`}</p>
-                        <p>{`Player2 gain +${elapsedTime} scores!`}</p>
+                        <p className="text-lg font-semibold text-green-700">{`Player1 Laughed, Player2 WIN!`}</p>
+                        <p className="text-md text-gray-700 italic">{`Player2 gain +${elapsedTime} scores!`}</p>
+
                       </div>
                     ) : (
                       <div>
